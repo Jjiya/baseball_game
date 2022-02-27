@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+  <style>
+      .wrap {
+          width: 50vh;
+          margin: 0 auto;
+      }
+
+      .word {
+          width: 50px;
+          height: 50px;
+          font-size: 30px;
+          font-weight: bold;
+          text-align: center;
+          vertical-align: middle;
+          border: 5px solid black;
+      }
+
+      .word_wrap {
+          background-color: lightslategray;
+          width: 100%;
+      }
+
+      .submit_btn {
+          display: none;
+          width: 100px;
+          height: 50px;
+          font-size: 30px;
+          vertical-align: middle;
+          margin-left: 10px;
+          background-color: rgb(68, 68, 68);
+          color: #fff;
+      }
+
+      .correct {
+          background-color: green;
+          color: white;
+      }
+
+      .miss {
+          background-color: yellow;
+      }
+
+      .wrong {
+          background-color: dimgray;
+          color: white;
+      }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>BASEBALL GAME</h1>
+  <h2>도전 횟수: <span id="life">1</span></h2>
+  <div class="word_wrap">
+    <div class="word_wrap_1">
+      <input type="text" name="word_1" class="word" maxlength="1"/>
+      <input type="text" name="word_2" class="word" maxlength="1"/>
+      <input type="text" name="word_3" class="word" maxlength="1"/>
+      <input type="text" name="word_4" class="word" maxlength="1"/>
+      <input type="text" name="word_5" class="word" maxlength="1"/>
+      <button class="submit_btn submit_btn_1">타격</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const answer = "HELLO";
+  const answerArr = [...answer];
+
+  let life = 1;
+  //input 입력 감지
+  document.querySelectorAll(`.word_wrap_${life} .word`).forEach(function (word) {
+    word.addEventListener("keyup", function () {
+      this.value = this.value.toUpperCase().substring(0, 1);
+      let idx = parseInt(this.name.split("_")[1]);
+
+      if (this.value.length === 1 && idx < 5) {
+        let nextInput = document.querySelector(`input[name=word_${idx + 1}]`);
+
+        nextInput.focus();
+        nextInput.value = "";
+      }
+
+      let inputCheck = 0;
+      document.querySelectorAll(".word").forEach(function (word) {
+        inputCheck += word.value.length;
+      });
+
+      if (inputCheck === 5) {
+        document.querySelector(`.submit_btn_${life}`).style = "display: inline;";
+      }
+    });
+  });
+
+  function inputEvent(word){}
+
+  document.getElementsByClassName("submit_btn")[life - 1].addEventListener("click", function () {
+    let count = 0;
+    document.querySelectorAll(`.word_wrap_${life} .word`).forEach(function (word, idx) {
+      console.log(word.value === answerArr[idx]);
+      if (word.value === answerArr[idx]) {
+        word.classList.add("correct");
+        count++;
+      } else if (answerArr.includes(word.value)) {
+        word.classList.add("miss");
+      } else {
+        word.classList.add("wrong");
+      }
+    });
+      console.log(count);
+      if (count < 5) {
+        life++;
+        document.getElementsByClassName("word_wrap")[0].insertAdjacentHTML("beforeend", `
+        <div class="word_wrap_${life}">
+          <input type="text" name="word_1" class="word" maxlength="1"/>
+          <input type="text" name="word_2" class="word" maxlength="1"/>
+          <input type="text" name="word_3" class="word" maxlength="1"/>
+          <input type="text" name="word_4" class="word" maxlength="1"/>
+          <input type="text" name="word_5" class="word" maxlength="1"/>
+          <button class="submit_btn submit_btn_${life}">타격</button>
+        </div>`);
+        console.log(life);
+      }
+  })
+</script>
+</body>
+</html>
